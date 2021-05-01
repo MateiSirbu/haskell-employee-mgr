@@ -1,3 +1,7 @@
+-- Evidența angajaților firmei Generic SRL
+-- Sîrbu Matei-Dan, grupa 10LF383
+-- http://github.msirbu.eu
+
 import           Control.Exception
 import           Data.List
 import           System.Console.ANSI
@@ -18,8 +22,7 @@ data DatePersonale = DatePersonale
   }
 
 data Studii = Studii
-  { matricolFKStudii   :: Int
-  , tipStudii          :: String
+  { tipStudii          :: String
   , institutie         :: String
   , specializare       :: String
   , perioadaStudii     :: String
@@ -27,11 +30,10 @@ data Studii = Studii
   }
 
 data Experienta = Experienta
-  { matricolFKExperienta :: Int
-  , companie             :: String
-  , functie              :: String
-  , perioadaExperienta   :: String
-  , istoricSalariu       :: [Float]
+  { companie           :: String
+  , functie            :: String
+  , perioadaExperienta :: String
+  , istoricSalariu     :: [Float]
   }
 
 data Angajat = Angajat
@@ -43,11 +45,11 @@ data Angajat = Angajat
 handlerCitire :: IOError -> IO [String]
 handlerCitire e
   | isDoesNotExistError e = case ioeGetFileName (e) of
-    Just cale -> (createDirectoryIfMissing True $ takeDirectory cale) >> writeFile cale "" >> return [""]
-    Nothing   -> putStrLn (ioeGetErrorString (e)) >> return [""]
+    Just cale -> (createDirectoryIfMissing True $ takeDirectory cale) >> writeFile cale "" >> return []
+    Nothing   -> putStrLn (ioeGetErrorString (e)) >> return []
   | isPermissionError e = case ioeGetFileName (e) of
-    Just cale -> putStrLn ("Acces interzis. Verificați permisiunile fișierului " ++ cale ++ ".") >> return [""]
-    Nothing   -> putStrLn (ioeGetErrorString (e)) >> return [""]
+    Just cale -> putStrLn ("Acces interzis. Verificați permisiunile fișierului " ++ cale ++ ".") >> return []
+    Nothing   -> putStrLn (ioeGetErrorString (e)) >> return []
   | otherwise = ioError e
 
 citireFisier :: String -> IO [String]
@@ -78,4 +80,3 @@ main = do
   clearScreen
   meniuPrincipal titlu
   citireAngajati ()
-

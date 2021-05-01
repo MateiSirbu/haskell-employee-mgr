@@ -1,0 +1,9 @@
+date/
+# No Haskell interface files
+Main.hi
+# No Haskell object files
+Main.o
+# No Linux/Darwin binaries
+Main
+# No Windows binaries
+Main.exe
