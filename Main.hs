@@ -1,7 +1,10 @@
 import           Control.Exception
 import           Data.List
 import           System.Console.ANSI
+import           System.Directory               ( createDirectoryIfMissing )
+import           System.FilePath.Posix          ( takeDirectory )
 import           System.IO
+import           System.IO.Error
 
 data DatePersonale = DatePersonale
   { matricol     :: Int
@@ -37,24 +40,30 @@ data Angajat = Angajat
   , experienta    :: [Experienta]
   }
 
+handlerCitire :: IOError -> IO [String]
+handlerCitire e
+  | isDoesNotExistError e = case ioeGetFileName (e) of
+    Just cale -> (createDirectoryIfMissing True $ takeDirectory cale) >> writeFile cale "" >> return [""]
+    Nothing   -> putStrLn (ioeGetErrorString (e)) >> return [""]
+  | isPermissionError e = case ioeGetFileName (e) of
+    Just cale -> putStrLn ("Acces interzis. Verificați permisiunile fișierului " ++ cale ++ ".") >> return [""]
+    Nothing   -> putStrLn (ioeGetErrorString (e)) >> return [""]
+  | otherwise = ioError e
+
 citireFisier :: String -> IO [String]
-citireFisier numeFisier = do
-  continutTry <- try (readFile numeFisier) :: IO (Either SomeException String)
-  continut    <- case continutTry of
-    Left  _     -> putStrLn "Funcția a făcut buba" >> return ""
-    Right value -> return value
+citireFisier caleFisier = handle handlerCitire $ do
+  continut <- readFile caleFisier
   let randuri = lines continut
   return randuri
 
 citireAngajati :: () -> IO ()
 citireAngajati () = do
-  fisDatePersonale <- citireFisier "DatePersonale.csv"
-  fisStudii        <- citireFisier "Studii.txt"
-  fisExperienta    <- citireFisier "Experienta.txt"
+  fisDatePersonale <- citireFisier "./date/DatePersonale.csv"
+  fisStudii        <- citireFisier "./date/Studii.csv"
+  fisExperienta    <- citireFisier "./date/Experienta.csv"
   print fisDatePersonale
   print fisStudii
   print fisExperienta
-
 
 meniuPrincipal :: String -> IO ()
 meniuPrincipal titlu = do
