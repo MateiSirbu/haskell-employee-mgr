@@ -2,81 +2,53 @@
 -- Sîrbu Matei-Dan, grupa 10LF383
 -- http://github.msirbu.eu
 
+module Main where
+
+import           ReadData
 import           Control.Exception
-import           Data.List
 import           System.Console.ANSI
 import           System.Directory               ( createDirectoryIfMissing )
 import           System.FilePath.Posix          ( takeDirectory )
 import           System.IO
 import           System.IO.Error
 
-data DatePersonale = DatePersonale
-  { matricol     :: Int
-  , nume         :: String
-  , initiala     :: String
-  , prenume      :: String
-  , dataNasterii :: String
-  , adresa       :: String
-  , telefon      :: String
-  , email        :: String
-  }
+afisareAngajati :: () -> IO ()
+afisareAngajati () = do
+  clearScreen
+  setCursorPosition 0 10
+  putStrLn "Afișare angajați"
+  _ <- citireAngajati ()
+  _ <- getLine
+  clearScreen
 
-data Studii = Studii
-  { tipStudii          :: String
-  , institutie         :: String
-  , specializare       :: String
-  , perioadaStudii     :: String
-  , documenteAbsolvire :: [String]
-  }
-
-data Experienta = Experienta
-  { companie           :: String
-  , functie            :: String
-  , perioadaExperienta :: String
-  , istoricSalariu     :: [Float]
-  }
-
-data Angajat = Angajat
-  { datePersonale :: DatePersonale
-  , studii        :: [Studii]
-  , experienta    :: [Experienta]
-  }
-
-handlerCitire :: IOError -> IO [String]
-handlerCitire e
-  | isDoesNotExistError e = case ioeGetFileName (e) of
-    Just cale -> (createDirectoryIfMissing True $ takeDirectory cale) >> writeFile cale "" >> return []
-    Nothing   -> putStrLn (ioeGetErrorString (e)) >> return []
-  | isPermissionError e = case ioeGetFileName (e) of
-    Just cale -> putStrLn ("Acces interzis. Verificați permisiunile fișierului " ++ cale ++ ".") >> return []
-    Nothing   -> putStrLn (ioeGetErrorString (e)) >> return []
-  | otherwise = ioError e
-
-citireFisier :: String -> IO [String]
-citireFisier caleFisier = handle handlerCitire $ do
-  continut <- readFile caleFisier
-  let randuri = lines continut
-  return randuri
-
-citireAngajati :: () -> IO ()
-citireAngajati () = do
-  fisDatePersonale <- citireFisier "./date/DatePersonale.csv"
-  fisStudii        <- citireFisier "./date/Studii.csv"
-  fisExperienta    <- citireFisier "./date/Experienta.csv"
-  print fisDatePersonale
-  print fisStudii
-  print fisExperienta
-
-meniuPrincipal :: String -> IO ()
-meniuPrincipal titlu = do
+meniuPrincipal :: () -> IO ()
+meniuPrincipal () = do
+  let titlu = "Evidența angajaților firmei Generic SRL"
   setTitle titlu
-  setCursorPosition 1 20
+  setCursorPosition 0 10
   putStrLn titlu
+  putStrLn ""
+  setCursorColumn 5
+  putStrLn "1) Afișare angajați"
+  setCursorColumn 5
+  putStrLn "2) Editare informații angajat"
+  setCursorColumn 5
+  putStrLn "------------------------------"
+  setCursorColumn 5
+  putStr "Opțiunea 1/2 > "
   hFlush stdout
+  optiune <- getLine
+  executare optiune
+
+executare :: String -> IO ()
+executare optiune
+  | (optiune == "1") = do
+    afisareAngajati ()
+    meniuPrincipal ()
+  | otherwise = do
+    putStrLn "NANI?!"
 
 main :: IO ()
 main = do
-  let titlu = "Evidența angajaților firmei Generic SRL"
   clearScreen
-  meniuPrincipal titlu
-  citireAngajati ()
+  meniuPrincipal ()
