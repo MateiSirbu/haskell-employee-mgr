@@ -7,8 +7,6 @@ module Main where
 import           ReadData
 import           Control.Exception
 import           System.Console.ANSI
-import           System.Directory               ( createDirectoryIfMissing )
-import           System.FilePath.Posix          ( takeDirectory )
 import           System.IO
 import           System.IO.Error
 
