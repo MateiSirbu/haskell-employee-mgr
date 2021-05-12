@@ -1,21 +1,26 @@
+-- =======================================
 -- Evidența angajaților firmei Generic SRL
--- Sîrbu Matei-Dan, grupa 10LF383
+--
+-- Sîrbu Matei-Dan, grupa 10LF383, UniTBv
 -- http://github.msirbu.eu
+-- =======================================
 
 module Main where
 
-import           ReadData
 import           Control.Exception
+import           EmployeeTablePrinter
+import           Entities
+import           GenericTablePrinter
+import           ReadData
 import           System.Console.ANSI
 import           System.IO
-import           System.IO.Error
 
 afisareAngajati :: () -> IO ()
 afisareAngajati () = do
   clearScreen
   setCursorPosition 0 10
-  putStrLn "Afișare angajați"
-  _ <- citireAngajati ()
+  let angajati = citireAngajati ()
+  printTable angajati
   _ <- getLine
   clearScreen
 
@@ -31,14 +36,14 @@ meniuPrincipal () = do
   setCursorColumn 5
   putStrLn "2) Editare informații angajat"
   setCursorColumn 5
-  putStrLn "------------------------------"
+  putStrLn $ repeatChar '━' 45
   setCursorColumn 5
   putStr "Opțiunea 1/2 > "
   hFlush stdout
   optiune <- getLine
   executare optiune
 
-executare :: String -> IO ()
+executare :: String -> IO () 
 executare optiune
   | (optiune == "1") = do
     afisareAngajati ()

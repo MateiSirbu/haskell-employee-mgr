@@ -1,13 +1,13 @@
 name:                employee-mgr
-version:             0.1.0.0
+version:             1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/githubuser/employee-mgr#readme
+homepage:            https://github.com/MateiSirbu/haskell-employee-mgr
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2021 Author name here
+author:              Matei Sîrbu
+maintainer:          hello@msirbu.eu
+copyright:           2021 Matei Sîrbu
 category:            Web
 build-type:          Simple
 cabal-version:       >=1.10

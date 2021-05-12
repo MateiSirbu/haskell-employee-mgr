@@ -1,44 +1,12 @@
 module ReadData where
 
 import           Control.Exception
-import           System.IO
-import           System.IO.Error
+import           Control.Monad
+import           Entities
 import           System.Directory               ( createDirectoryIfMissing )
 import           System.FilePath.Posix          ( takeDirectory )
-
-data DatePersonale = DatePersonale
-  { matricol     :: Int
-  , nume         :: String
-  , initiala     :: String
-  , prenume      :: String
-  , dataNasterii :: String
-  , adresa       :: String
-  , telefon      :: String
-  , email        :: String
-  }
-
-data Studii = Studii
-  { matricolStudiiFK   :: Int
-  , tipStudii          :: String
-  , institutie         :: String
-  , specializare       :: String
-  , perioadaStudii     :: String
-  , documenteAbsolvire :: [String]
-  }
-
-data Experienta = Experienta
-  { matricolExperientaFK :: Int
-  , companie             :: String
-  , functie              :: String
-  , perioadaExperienta   :: String
-  , istoricSalariu       :: [String]
-  }
-
-data Angajat = Angajat
-  { datePersonale :: DatePersonale
-  , studii        :: [Studii]
-  , experienta    :: [Experienta]
-  }
+import           System.IO
+import           System.IO.Error
 
 conversieRandLaDatePersonale :: [String] -> DatePersonale
 conversieRandLaDatePersonale rand = DatePersonale { matricol     = read (rand !! 0)
@@ -74,18 +42,6 @@ tokenizare (chr : chrs) sep | chr == sep = "" : restul
                             | otherwise  = (chr : head restul) : tail restul
   where restul = tokenizare chrs sep
 
-citireDatePersonale :: [String] -> [DatePersonale]
-citireDatePersonale []     = []
-citireDatePersonale fisier = map (\rand -> (conversieRandLaDatePersonale (tokenizare rand ','))) fisier
-
-citireStudii :: [String] -> [Studii]
-citireStudii []     = []
-citireStudii fisier = map (\rand -> (conversieRandLaStudii (tokenizare rand ','))) fisier
-
-citireExperienta :: [String] -> [Experienta]
-citireExperienta []     = []
-citireExperienta fisier = map (\rand -> (conversieRandLaExperienta (tokenizare rand ','))) fisier
-
 citireFisier :: String -> IO [String]
 citireFisier caleFisier = handle handlerCitire $ do
   continut <- readFile caleFisier
@@ -102,6 +58,15 @@ handlerCitire e
     Nothing   -> putStrLn (ioeGetErrorString (e)) >> return []
   | otherwise = putStrLn ("Nu se poate citi fișierul.") >> return []
 
+citireDatePersonale :: [String] -> [DatePersonale]
+citireDatePersonale fisier = map (\rand -> (conversieRandLaDatePersonale (tokenizare rand ','))) fisier
+
+citireStudii :: [String] -> [Studii]
+citireStudii fisier = map (\rand -> (conversieRandLaStudii (tokenizare rand ','))) fisier
+
+citireExperienta :: [String] -> [Experienta]
+citireExperienta fisier = map (\rand -> (conversieRandLaExperienta (tokenizare rand ','))) fisier
+
 initializareAngajat :: DatePersonale -> IO Angajat
 initializareAngajat date = do
   fisStudii <- citireFisier "./date/Studii.csv"
@@ -111,9 +76,9 @@ initializareAngajat date = do
   let angajat       = Angajat { datePersonale = date, studii = lstStudii, experienta = lstExperienta }
   return angajat
 
-citireAngajati :: () -> IO [IO Angajat]
+citireAngajati :: () -> IO [Angajat]
 citireAngajati () = do
   fisDatePersonale <- citireFisier "./date/DatePersonale.csv"
   let lstDatePersonale = citireDatePersonale fisDatePersonale
-  let angajati         = map initializareAngajat lstDatePersonale
+  angajati <- mapM initializareAngajat lstDatePersonale
   return angajati
