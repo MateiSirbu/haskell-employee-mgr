@@ -1,7 +1,8 @@
-module ReadData where
+module DataReader where
 
 import           Control.Exception
 import           Control.Monad
+import           Data.List
 import           Entities
 import           System.Directory               ( createDirectoryIfMissing )
 import           System.FilePath.Posix          ( takeDirectory )
@@ -82,3 +83,6 @@ citireAngajati () = do
   let lstDatePersonale = citireDatePersonale fisDatePersonale
   angajati <- mapM initializareAngajat lstDatePersonale
   return angajati
+
+cautareAngajat :: String -> [Angajat] -> [Angajat]
+cautareAngajat query angajati = filter (\angajat -> do (show (matricol (datePersonale angajat)) == query)) (angajati)

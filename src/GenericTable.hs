@@ -7,7 +7,7 @@
 -- Deobfuscat și modificat de Matei Sîrbu
 -- ==========================================
 
-module GenericTablePrinter where
+module GenericTable where
 
 import           Entities
 import           System.Console.ANSI
@@ -75,7 +75,7 @@ printStringList cs [col] [(lza, cal)] = do
   Just (lc, _) <- getCursorPosition
   cbv          <- return (cs + lza + 1)
   setCursorPosition lc cbv
-  putStr "│"
+  putStr "║"
   hFlush stdout
   putStrLn ""
 printStringList cs (col : rlc) ((lza, cal) : rldf) = do
@@ -89,7 +89,7 @@ printString :: Int -> String -> Int -> Int -> IO ()
 printString col str cellLength 0 = do
   Just (ln, _) <- getCursorPosition
   setCursorPosition ln col
-  putStr "│"
+  putStr "║"
   hFlush stdout
   putStr str
   hFlush stdout
@@ -98,7 +98,7 @@ printString col str cellLength 0 = do
 -- Afisare cu aliniere la dreapta
 printString col str cellLength 1 = do
   Just (ln, _) <- getCursorPosition
-  putStr "│"
+  putStr "║"
   hFlush stdout
   depl <- return (cellLength - (length str))
   putStr (repeatChar ' ' depl)

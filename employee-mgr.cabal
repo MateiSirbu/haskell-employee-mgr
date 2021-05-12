@@ -21,7 +21,8 @@ executable employee-mgr
                        directory,
                        filepath,
                        ansi-terminal
-  other-modules:       EmployeeTablePrinter,
+  other-modules:       EmployeeTable,
                        Entities,
-                       GenericTablePrinter,
-                       ReadData
+                       GenericTable,
+                       DataReader,
+                       ASCIIArt
