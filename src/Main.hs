@@ -43,7 +43,7 @@ meniuPrincipal () = do
   optiune <- getLine
   executare optiune
 
-executare :: String -> IO () 
+executare :: String -> IO ()
 executare optiune
   | (optiune == "1") = do
     afisareAngajati ()
