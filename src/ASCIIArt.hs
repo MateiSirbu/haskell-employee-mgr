@@ -1,5 +1,6 @@
 module ASCIIArt where
 
+import           GenericTable
 import           System.Console.ANSI
 import           System.IO
 
@@ -43,3 +44,12 @@ printGoodbyeScreen () = do
   _ <- getChar
   clearScreen
   setCursorPosition 0 0
+
+printWarning :: Int -> Int -> Int -> IO ()
+printWarning linie spatiuStanga lungimeEcran = do
+  printMessage linie spatiuStanga "╔╗" lungimeEcran
+  printMessage (linie + 1) spatiuStanga "║║" lungimeEcran
+  printMessage (linie + 2) spatiuStanga "║║" lungimeEcran
+  printMessage (linie + 3) spatiuStanga "╚╝" lungimeEcran
+  printMessage (linie + 4) spatiuStanga "╔╗" lungimeEcran
+  printMessage (linie + 5) spatiuStanga "╚╝" lungimeEcran

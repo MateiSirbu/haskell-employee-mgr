@@ -10,56 +10,97 @@ module Main where
 import           ASCIIArt
 import           Control.Exception
 import           DataReader
+import           EmployeePreview
 import           EmployeeTable
 import           Entities
 import           GenericTable
 import           System.Console.ANSI
 import           System.IO
 
-afisareAngajati :: () -> IO ()
-afisareAngajati () = do
+afisareInformatiiAngajat :: Int -> Int -> [Angajat] -> IO ()
+afisareInformatiiAngajat spatiuStanga lungimeEcran rezCautare = if length rezCautare == 0
+  then do
+    clearScreen
+    printWarning 2 spatiuStanga lungimeEcran
+    printMessage 9  spatiuStanga "EROARE"                          lungimeEcran
+    printMessage 11 spatiuStanga "Nu s-a putut găsi un angajat"    lungimeEcran
+    printMessage 12 spatiuStanga "cu numărul matricol specificat." lungimeEcran
+    printMessage 14 spatiuStanga "[Apăsați ENTER] "                lungimeEcran
+    _ <- getChar
+    afisareAngajati spatiuStanga lungimeEcran
+  else if length rezCautare == 1
+    then do
+      clearScreen
+      setCursorPosition 0 0
+      let angajat = rezCautare !! 0
+      putStrLn $ nume $ datePersonale angajat
+      _ <- getChar
+      afisareAngajati spatiuStanga lungimeEcran
+    else do
+      clearScreen
+      printWarning 2 spatiuStanga lungimeEcran
+      printMessage 9  spatiuStanga "EROARE"                              lungimeEcran
+      printMessage 11 spatiuStanga "Mai mulți angajați au același număr" lungimeEcran
+      printMessage 12 spatiuStanga "matricol. Verificați integritatea fișierului." lungimeEcran
+      printMessage 14 spatiuStanga "[Apăsați ENTER] "                    lungimeEcran
+      _ <- getChar
+      afisareAngajati spatiuStanga lungimeEcran
+
+
+afisareAngajati :: Int -> Int -> IO ()
+afisareAngajati spatiuStanga lungimeEcran = do
   clearScreen
-  let spatiuStanga = 5
-  let angajati     = citireAngajati ()
-  printTable spatiuStanga angajati
+  let ioAngajati = citireAngajati ()
+  printTable spatiuStanga ioAngajati
   setCursorColumn (spatiuStanga + 1)
   putStrLn "Mai multe informații"
   setCursorColumn (spatiuStanga + 1)
   putStr "Număr matricol > "
   hFlush stdout
   matricol <- getLine
-  clearScreen
+  angajati <- ioAngajati
+  if matricol == mempty then clearScreen else afisareInformatiiAngajat spatiuStanga lungimeEcran $ cautareAngajat matricol angajati
 
 meniuPrincipal :: () -> IO ()
 meniuPrincipal () = do
   let titlu1       = "Evidența angajaților "
   let titlu2       = "firmei Generic SRL"
-  let lungimeMeniu = 65
+  let lungimeEcran = 65
   let spatiuStanga = 5
   setTitle $ titlu1 ++ titlu2
   setCursorPosition 1 0
   printSplashScreen ()
-  printMessage 13 spatiuStanga titlu2 lungimeMeniu
+  printMessage 13 spatiuStanga titlu2 lungimeEcran
   setCursorPosition 15 spatiuStanga
   putStrLn "1) Afișare angajați"
   setCursorColumn spatiuStanga
   putStrLn "2) Editare informații angajat"
   setCursorColumn spatiuStanga
-  putStrLn $ repeatChar '━' lungimeMeniu
+  putStrLn $ repeatChar '━' lungimeEcran
   setCursorColumn spatiuStanga
   putStr "Opțiunea 1/2 > "
   hFlush stdout
   optiune <- getLine
-  executare optiune
+  executare spatiuStanga lungimeEcran optiune
 
-executare :: String -> IO ()
-executare optiune
+executare :: Int -> Int -> String -> IO ()
+executare spatiuStanga lungimeEcran optiune
   | (optiune == "1") = do
-    afisareAngajati ()
+    afisareAngajati spatiuStanga lungimeEcran
     meniuPrincipal ()
-  | otherwise = do
+  | (optiune == mempty) = do
     clearScreen
     printGoodbyeScreen ()
+  | otherwise = do
+    clearScreen
+    printWarning 2 spatiuStanga lungimeEcran
+    printMessage 9  spatiuStanga "EROARE"                               lungimeEcran
+    printMessage 11 spatiuStanga "Opțiunea aleasă este invalidă."       lungimeEcran
+    printMessage 12 spatiuStanga "Pentru ieșire alegeți opțiunea nulă." lungimeEcran
+    printMessage 14 spatiuStanga "[Apăsați ENTER] "                     lungimeEcran
+    _ <- getLine
+    clearScreen
+    meniuPrincipal ()
 
 main :: IO ()
 main = do

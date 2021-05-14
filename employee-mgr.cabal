@@ -25,4 +25,5 @@ executable employee-mgr
                        Entities,
                        GenericTable,
                        DataReader,
-                       ASCIIArt
+                       ASCIIArt,
+                       EmployeePreview
