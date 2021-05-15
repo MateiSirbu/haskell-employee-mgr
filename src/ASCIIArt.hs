@@ -47,7 +47,7 @@ printGoodbyeScreen () = do
 
 printWarning :: Int -> Int -> Int -> IO ()
 printWarning linie spatiuStanga lungimeEcran = do
-  printMessage linie spatiuStanga "╔╗" lungimeEcran
+  printMessage (linie + 0) spatiuStanga "╔╗" lungimeEcran
   printMessage (linie + 1) spatiuStanga "║║" lungimeEcran
   printMessage (linie + 2) spatiuStanga "║║" lungimeEcran
   printMessage (linie + 3) spatiuStanga "╚╝" lungimeEcran

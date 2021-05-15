@@ -26,7 +26,7 @@ conversieRandLaStudii rand = Studii { matricolStudiiFK   = read (rand !! 0)
                                     , institutie         = (rand !! 2)
                                     , specializare       = (rand !! 3)
                                     , perioadaStudii     = (rand !! 4)
-                                    , documenteAbsolvire = tokenizare (rand !! 5) ';'
+                                    , documenteAbsolvire = tokenizare (rand !! 5) '|'
                                     }
 
 conversieRandLaExperienta :: [String] -> Experienta
@@ -34,7 +34,7 @@ conversieRandLaExperienta rand = Experienta { matricolExperientaFK = read (rand 
                                             , companie             = (rand !! 1)
                                             , functie              = (rand !! 2)
                                             , perioadaExperienta   = (rand !! 3)
-                                            , istoricSalariu       = tokenizare (rand !! 4) ';'
+                                            , istoricSalariu       = tokenizare (rand !! 4) '|'
                                             }
 
 tokenizare :: String -> Char -> [String]

@@ -31,10 +31,8 @@ afisareInformatiiAngajat spatiuStanga lungimeEcran rezCautare = if length rezCau
   else if length rezCautare == 1
     then do
       clearScreen
-      setCursorPosition 0 0
       let angajat = rezCautare !! 0
-      putStrLn $ nume $ datePersonale angajat
-      _ <- getChar
+      afisareCompletaAngajat spatiuStanga angajat
       afisareAngajati spatiuStanga lungimeEcran
     else do
       clearScreen
