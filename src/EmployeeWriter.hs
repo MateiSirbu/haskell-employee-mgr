@@ -63,8 +63,28 @@ scriereDatePersonale spCol1 lungimeEcran angajatiExistenti = do
                              }
       return dp
 
-scriereStudii :: Int -> Int -> IO [Studii]
-scriereStudii spatiuStanga lungimeEcran = do
+scriereItemiExperienta :: Int -> Int -> Int -> Int -> [Experienta] -> IO [Experienta]
+scriereItemiExperienta _ _ 0 matricol ioExperienta = do
+  return ioExperienta
+scriereItemiExperienta spatiuStanga lungimeEcran nrItemi matricol ioExperienta = do
+  hFlush stdout
+  let experienta     = ioExperienta
+  let itemExperienta = Experienta{}
+  putStrLn "Cartof"
+  scriereItemiExperienta spatiuStanga lungimeEcran (nrItemi - 1) matricol (experienta ++ [itemExperienta])
+
+scriereItemiStudii :: Int -> Int -> Int -> Int -> [Studii] -> IO [Studii]
+scriereItemiStudii _ _ 0 matricol ioStudii = do
+  return ioStudii
+scriereItemiStudii spatiuStanga lungimeEcran nrItemi matricol ioStudii = do
+  hFlush stdout
+  let studii     = ioStudii
+  let itemStudiu = Studii{}
+  putStrLn "Ceapă"
+  scriereItemiStudii spatiuStanga lungimeEcran (nrItemi - 1) matricol (ioStudii ++ [itemStudiu])
+
+scriereStudii :: Int -> Int -> Int -> IO [Studii]
+scriereStudii spatiuStanga lungimeEcran matricol = do
   putStrLn ""
   setCursorColumn spatiuStanga
   putStrLn "2) Studii"
@@ -72,24 +92,28 @@ scriereStudii spatiuStanga lungimeEcran = do
   setCursorColumn spatiuStanga
   putStr "Câți itemi? > "
   hFlush stdout
-  _ <- getLine
+  nrItemi <- getLine
+  putStrLn ""
+  studii <- scriereItemiStudii spatiuStanga lungimeEcran (read nrItemi) matricol []
   return []
 
-scriereExperienta :: Int -> Int -> IO [Experienta]
-scriereExperienta spatiuStanga lungimeEcran = do
+scriereExperienta :: Int -> Int -> Int -> IO [Experienta]
+scriereExperienta spatiuStanga lungimeEcran matricol = do
   putStrLn ""
   setCursorColumn spatiuStanga
-  putStrLn "3) Experienta"
+  putStrLn "3) Experiență"
   putStrLn ""
   setCursorColumn spatiuStanga
   putStr "Câți itemi? > "
   hFlush stdout
-  _ <- getLine
+  nrItemi <- getLine
+  putStrLn ""
+  studii <- scriereItemiExperienta spatiuStanga lungimeEcran (read nrItemi) matricol []
   return []
 
 citireAngajatFormular :: Int -> Int -> [Angajat] -> IO Angajat
 citireAngajatFormular spatiuStanga lungimeEcran angajatiExistenti = do
   datePersonale <- scriereDatePersonale spatiuStanga lungimeEcran angajatiExistenti
-  studii        <- scriereStudii spatiuStanga lungimeEcran
-  experienta    <- scriereExperienta spatiuStanga lungimeEcran
+  studii        <- scriereStudii spatiuStanga lungimeEcran $ matricol datePersonale
+  experienta    <- scriereExperienta spatiuStanga lungimeEcran $ matricol datePersonale
   return Angajat { datePersonale = datePersonale, studii = studii, experienta = experienta }
