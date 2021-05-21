@@ -65,8 +65,8 @@ adaugareAngajat spatiuStanga lungimeEcran = do
   clearScreen
   let ioAngajatiExistenti = citireAngajati ()
   angajatiExistenti <- ioAngajatiExistenti
-  angajat           <- citireAngajatFormular spatiuStanga lungimeEcran angajatiExistenti
-  _                 <- getLine
+  angajatNou        <- citireAngajatFormular spatiuStanga lungimeEcran angajatiExistenti
+  adaugareAngajatInFisier spatiuStanga angajatNou
   clearScreen
 
 meniuPrincipal :: () -> IO ()
