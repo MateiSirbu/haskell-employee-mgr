@@ -12,6 +12,7 @@ import           Control.Exception
 import           DataReader
 import           EmployeePreview
 import           EmployeeTable
+import           EmployeeWriter
 import           Entities
 import           GenericTable
 import           System.Console.ANSI
@@ -59,6 +60,15 @@ afisareAngajati spatiuStanga lungimeEcran = do
   angajati <- ioAngajati
   if matricol == mempty then clearScreen else afisareInformatiiAngajat spatiuStanga lungimeEcran $ cautareAngajat matricol angajati
 
+adaugareAngajat :: Int -> Int -> IO ()
+adaugareAngajat spatiuStanga lungimeEcran = do
+  clearScreen
+  let ioAngajatiExistenti = citireAngajati ()
+  angajatiExistenti <- ioAngajatiExistenti
+  angajat           <- citireAngajatFormular spatiuStanga lungimeEcran angajatiExistenti
+  _                 <- getLine
+  clearScreen
+
 meniuPrincipal :: () -> IO ()
 meniuPrincipal () = do
   let titlu1       = "Evidența angajaților "
@@ -72,7 +82,7 @@ meniuPrincipal () = do
   setCursorPosition 15 spatiuStanga
   putStrLn "1) Afișare angajați"
   setCursorColumn spatiuStanga
-  putStrLn "2) Editare informații angajat"
+  putStrLn "2) Adăugare angajat"
   setCursorColumn spatiuStanga
   putStrLn $ repeatChar '━' lungimeEcran
   setCursorColumn spatiuStanga
@@ -85,6 +95,9 @@ executare :: Int -> Int -> String -> IO ()
 executare spatiuStanga lungimeEcran optiune
   | (optiune == "1") = do
     afisareAngajati spatiuStanga lungimeEcran
+    meniuPrincipal ()
+  | (optiune == "2") = do
+    adaugareAngajat spatiuStanga lungimeEcran
     meniuPrincipal ()
   | (optiune == mempty) = do
     clearScreen

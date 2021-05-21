@@ -26,4 +26,5 @@ executable employee-mgr
                        GenericTable,
                        DataReader,
                        ASCIIArt,
-                       EmployeePreview
+                       EmployeePreview,
+                       EmployeeWriter
