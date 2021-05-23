@@ -1,3 +1,3 @@
 #!/bin/bash
 
-stack build && stack exec employee-mgr
+stack install && stack exec employee-mgr

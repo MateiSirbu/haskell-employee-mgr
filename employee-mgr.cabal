@@ -1,7 +1,7 @@
 name:                employee-mgr
 version:             1.0.0
--- synopsis:
--- description:
+synopsis:            A basic CLI employee manager written in Haskell.
+description:         Does exactly what is says on the tin.
 homepage:            https://github.com/MateiSirbu/haskell-employee-mgr
 license:             BSD3
 license-file:        LICENSE
