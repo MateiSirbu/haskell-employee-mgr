@@ -1,3 +1,10 @@
+-- =======================================
+-- Scriere listă angajați în fișiere CSV
+--
+-- Sîrbu Matei-Dan, grupa 10LF383, UniTBv
+-- http://github.msirbu.eu
+-- =======================================
+
 module EmployeeWriter where
 
 import           ASCIIArt
@@ -7,6 +14,7 @@ import           Entities
 import           GenericTable
 import           System.Console.ANSI
 import           System.IO
+import           Text.Read
 
 citireCamp :: Int -> Int -> String -> IO String
 citireCamp spCol1 spCol2 numeCamp = do
@@ -18,6 +26,11 @@ citireCamp spCol1 spCol2 numeCamp = do
   hFlush stdout
   camp <- getLine
   return camp
+
+citireNumarItemi :: String -> Int
+citireNumarItemi x | ((readMaybe x :: Maybe Int) == Nothing) = 0
+                   | (read x < 0) = 0
+                   | otherwise = read x :: Int
 
 eroareDuplicat :: Int -> Int -> IO ()
 eroareDuplicat spatiuStanga lungimeEcran = do
@@ -86,7 +99,7 @@ scriereItemiExperienta spatiuStanga nrItemi matricol ioExperienta = do
   functie               <- citireCamp spCol1 spCol2 "FUNCȚIE"
   perioadaExperienta    <- citireCamp spCol1 spCol2 "PERIOADĂ EXPERIENȚĂ"
   nrItemiIstoricSalariu <- citireCamp spCol1 spCol2 "ISTORIC SALARIU: Câți itemi?"
-  istoricSalariu        <- citireItemString spCol2 (read nrItemiIstoricSalariu) []
+  istoricSalariu        <- citireItemString spCol2 (citireNumarItemi nrItemiIstoricSalariu) []
   let itemExperienta = Experienta { matricolExperientaFK = matricol
                                   , companie             = companie
                                   , functie              = functie
@@ -108,7 +121,8 @@ citireItemiStudii spatiuStanga nrItemi matricol ioStudii = do
   specializare              <- citireCamp spCol1 spCol2 "SPECIALIZARE"
   perioadaStudii            <- citireCamp spCol1 spCol2 "PERIOADĂ STUDII"
   nrItemiDocumenteAbsolvire <- citireCamp spCol1 spCol2 "DOCUMENTE ABSOLVIRE: Câți itemi?"
-  documenteAbsolvire        <- citireItemString spCol2 (read nrItemiDocumenteAbsolvire) []
+
+  documenteAbsolvire        <- citireItemString spCol2 (citireNumarItemi nrItemiDocumenteAbsolvire) []
   let itemStudiu = Studii { matricolStudiiFK   = matricol
                           , tipStudii          = tipStudii
                           , institutie         = institutie
@@ -128,7 +142,7 @@ citireStudiiTastatura spatiuStanga matricol = do
   putStr "Câți itemi? > "
   hFlush stdout
   nrItemi <- getLine
-  studii  <- citireItemiStudii spatiuStanga (read nrItemi) matricol []
+  studii  <- citireItemiStudii spatiuStanga (citireNumarItemi nrItemi) matricol []
   return studii
 
 citireExperientaTastatura :: Int -> Int -> IO [Experienta]
@@ -141,7 +155,7 @@ citireExperientaTastatura spatiuStanga matricol = do
   putStr "Câți itemi? > "
   hFlush stdout
   nrItemi    <- getLine
-  experienta <- scriereItemiExperienta spatiuStanga (read nrItemi) matricol []
+  experienta <- scriereItemiExperienta spatiuStanga (citireNumarItemi nrItemi) matricol []
   return experienta
 
 citireAngajatFormular :: Int -> Int -> [Angajat] -> IO Angajat

@@ -14,7 +14,6 @@ import           System.Console.ANSI
 import           System.IO
 
 -- Subliniere pe linie specificata de la coloana de start specificata
-
 underline :: Maybe Int -> Int -> Int -> Char -> IO ()
 
 underline (Just ln) col length chr = do
@@ -28,13 +27,11 @@ underline Nothing col length chr = do
   hFlush stdout
 
 -- Replicare caracter de un numar de ori specificat
-
 repeatChar :: Char -> Int -> String
 repeatChar _   0  = []
 repeatChar chr nr = chr : (repeatChar chr (nr - 1))
 
 -- Determinare lungime subliniere aferenta afisare pe ecran
-
 computeTableLength :: [(Int, Int)] -> IO Int
 computeTableLength colSpecs = do
   noColumns        <- return (length colSpecs)
@@ -42,13 +39,11 @@ computeTableLength colSpecs = do
   return (noColumns + totalLengthCells)
 
 -- Determinare lungime exclusiv zone de afisare coloane inregistrare
-
 computeTotalCellLengths :: [(Int, Int)] -> Int
 computeTotalCellLengths []                           = 0
 computeTotalCellLengths ((cellLength, _) : colSpecs) = cellLength + (computeTotalCellLengths colSpecs)
 
 -- Afisare lista de inregistrari
-
 printListOfStringLists :: Int -> [[String]] -> [(Int, Int)] -> IO ()
 printListOfStringLists _  []             _        = return ()
 printListOfStringLists cs (strL : lStrL) colSpecs = do
@@ -56,7 +51,6 @@ printListOfStringLists cs (strL : lStrL) colSpecs = do
   printListOfStringLists cs lStrL colSpecs
 
 -- Afisare inregistrare
-
 printStringList :: Int -> [String] -> [(Int, Int)] -> IO ()
 
 printStringList spatiuStanga [str] [(lungimeCelula, aliniere)] = do
@@ -73,7 +67,6 @@ printStringList spatiuStanga (str : lstStr) ((lungimeCelula, aliniere) : lstConf
   printStringList (spatiuStanga + lungimeCelula + 1) lstStr lstConfig
 
 -- Afisare coloana
-
 printString :: Int -> String -> Int -> Int -> IO ()
 
 -- Afisare cu aliniere la stanga
@@ -100,7 +93,6 @@ printString col str cellLength 1 = do
   hFlush stdout
 
 -- Afisare centrata mesaj, pozitionata si cu lungime zona de afisare specificata
-
 printMessage :: Int -> Int -> String -> Int -> IO ()
 printMessage ln spatiuStanga msg tblLength = do
   depl <- return ((tblLength - (length msg)) `div` 2)

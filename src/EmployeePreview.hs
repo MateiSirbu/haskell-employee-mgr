@@ -1,3 +1,10 @@
+-- =======================================
+-- Afișare elaborată angajați
+--
+-- Sîrbu Matei-Dan, grupa 10LF383, UniTBv
+-- http://github.msirbu.eu
+-- =======================================
+
 module EmployeePreview where
 
 import           ASCIIArt

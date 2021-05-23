@@ -1,3 +1,10 @@
+-- =======================================
+-- Citire listă angajați din fișiere CSV
+--
+-- Sîrbu Matei-Dan, grupa 10LF383, UniTBv
+-- http://github.msirbu.eu
+-- =======================================
+
 module DataReader where
 
 import           Control.Exception

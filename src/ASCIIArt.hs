@@ -1,3 +1,10 @@
+-- =========================================
+-- Niște sigle din caractere, nimic deosebit
+--
+-- Sîrbu Matei-Dan, grupa 10LF383, UniTBv
+-- http://github.msirbu.eu
+-- =========================================
+
 module ASCIIArt where
 
 import           GenericTable
