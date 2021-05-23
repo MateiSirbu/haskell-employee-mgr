@@ -17,6 +17,7 @@ import           Entities
 import           GenericTable
 import           System.Console.ANSI
 import           System.IO
+import           Text.Read
 
 afisareInformatiiAngajat :: Int -> Int -> [Angajat] -> IO ()
 afisareInformatiiAngajat spatiuStanga lungimeEcran rezCautare = if length rezCautare == 0
@@ -45,7 +46,6 @@ afisareInformatiiAngajat spatiuStanga lungimeEcran rezCautare = if length rezCau
       _ <- getChar
       afisareAngajati spatiuStanga lungimeEcran
 
-
 afisareAngajati :: Int -> Int -> IO ()
 afisareAngajati spatiuStanga lungimeEcran = do
   clearScreen
@@ -56,9 +56,10 @@ afisareAngajati spatiuStanga lungimeEcran = do
   setCursorColumn (spatiuStanga + 1)
   putStr "Număr matricol > "
   hFlush stdout
-  matricol <- getLine
+  matricolString <- getLine
+  let matricol = citireMatricolValid matricolString
   angajati <- ioAngajati
-  if matricol == mempty then clearScreen else afisareInformatiiAngajat spatiuStanga lungimeEcran $ cautareAngajat matricol angajati
+  if matricolString == mempty then clearScreen else afisareInformatiiAngajat spatiuStanga lungimeEcran $ cautareAngajat matricol angajati
 
 adaugareAngajat :: Int -> Int -> IO ()
 adaugareAngajat spatiuStanga lungimeEcran = do

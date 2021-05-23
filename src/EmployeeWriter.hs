@@ -32,6 +32,10 @@ citireNumarItemi x | ((readMaybe x :: Maybe Int) == Nothing) = 0
                    | (read x < 0) = 0
                    | otherwise = read x :: Int
 
+citireMatricolValid :: String -> Int
+citireMatricolValid x | ((readMaybe x :: Maybe Int) == Nothing) = 0
+                      | otherwise = read x :: Int
+
 eroareDuplicat :: Int -> Int -> IO ()
 eroareDuplicat spatiuStanga lungimeEcran = do
   clearScreen
@@ -52,7 +56,8 @@ citireDatePersonaleTastatura spCol1 lungimeEcran angajatiExistenti = do
   setCursorPosition 3 spCol1
   putStrLn "1) Date personale"
   putStrLn ""
-  matricol <- citireCamp spCol1 spCol2 "MATRICOL"
+  matricolString <- citireCamp spCol1 spCol2 "MATRICOL"
+  let matricol = citireMatricolValid matricolString
   let cautare = cautareAngajat matricol angajatiExistenti
   if length cautare > 0
     then do
@@ -66,7 +71,7 @@ citireDatePersonaleTastatura spCol1 lungimeEcran angajatiExistenti = do
       adresa       <- citireCamp spCol1 spCol2 "ADRESA"
       telefon      <- citireCamp spCol1 spCol2 "TELEFON"
       email        <- citireCamp spCol1 spCol2 "E-MAIL"
-      let dp = DatePersonale { matricol     = read matricol
+      let dp = DatePersonale { matricol     = matricol
                              , nume         = nume
                              , initiala     = initiala
                              , prenume      = prenume
@@ -202,22 +207,16 @@ adaugareAngajatInFisier spatiuStanga angajat = do
   optiune <- getLine
   if optiune == "d" || optiune == "D"
     then do
-      hDP <- openFile "./date/DatePersonale.csv" AppendMode
-      hPutStrLn hDP $ csvDatePersonale $ datePersonale angajat
-      hClose hDP
-      hS <- openFile "./date/Studii.csv" AppendMode
-      mapM
+      withFile "./date/DatePersonale.csv" AppendMode $ \h -> hPutStrLn h $ csvDatePersonale $ datePersonale angajat
+      withFile "./date/Studii.csv" AppendMode $ \h -> mapM
         (\s -> do
-          hPutStrLn hS (csvStudii s)
+          hPutStrLn h $ csvStudii s
         )
         (studii angajat)
-      hClose hS
-      hE <- openFile "./date/Experienta.csv" AppendMode
-      mapM
+      withFile "./date/Experienta.csv" AppendMode $ \h -> mapM
         (\e -> do
-          hPutStrLn hE (csvExperienta e)
+          hPutStrLn h $ csvExperienta e
         )
         (experienta angajat)
-      hClose hE
       clearScreen
     else clearScreen

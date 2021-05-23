@@ -7,6 +7,7 @@
 
 module DataReader where
 
+import           Control.DeepSeq
 import           Control.Exception
 import           Control.Monad
 import           Data.List
@@ -52,9 +53,10 @@ tokenizare (chr : chrs) sep | chr == sep = "" : restul
 
 citireFisier :: String -> IO [String]
 citireFisier caleFisier = handle handlerCitire $ do
-  continut <- readFile caleFisier
-  let randuri = lines continut
-  return randuri
+  withFile caleFisier ReadMode $ \h -> do
+    continut <- hGetContents h
+    let randuri = lines continut
+    return $!! randuri
 
 handlerCitire :: IOError -> IO [String]
 handlerCitire e
@@ -91,5 +93,9 @@ citireAngajati () = do
   angajati <- mapM initializareAngajat lstDatePersonale
   return angajati
 
-cautareAngajat :: String -> [Angajat] -> [Angajat]
-cautareAngajat query angajati = filter (\angajat -> do (show (matricol (datePersonale angajat)) == query)) (angajati)
+cautareAngajat :: Int -> [Angajat] -> [Angajat]
+cautareAngajat query angajati = filter
+  (\angajat -> do
+    ((matricol (datePersonale angajat)) == query)
+  )
+  (angajati)

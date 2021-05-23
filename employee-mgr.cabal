@@ -20,7 +20,8 @@ executable employee-mgr
   build-depends:       base >= 4.7 && < 5,
                        directory,
                        filepath,
-                       ansi-terminal
+                       ansi-terminal,
+                       deepseq
   other-modules:       EmployeeTable,
                        Entities,
                        GenericTable,
