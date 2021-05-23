@@ -29,4 +29,3 @@ tags
 better-cache/
 stack*.yaml.lock
 .DS_Store
-date/
